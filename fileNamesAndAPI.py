@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May  7 17:01:19 2020
 
-"""
 
 import pandas as pd
 import requests
@@ -45,7 +41,8 @@ def testfile(link):
     cleanedFileName = []
     for i in range(len(fileName)):
         cleanedFileName.append(fileName[i].split(".",maxsplit=1)[0])
-        
+    
+    #Creating a data frame to for the cleaned fileNames and corresponding Customer Id's
     testData = pd.DataFrame(columns = ["custID","filePath"])
     testData["custID"]=cleanedFileName
     testData["filePath"] = filePath
