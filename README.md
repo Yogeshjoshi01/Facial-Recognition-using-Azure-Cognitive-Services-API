@@ -1,1 +1,3 @@
-# Facial-Recognition-using-Azure-Cognitive-Services-API
+In this repository there are two python files. A detailed documentation is as follows:
+
+1 - 
