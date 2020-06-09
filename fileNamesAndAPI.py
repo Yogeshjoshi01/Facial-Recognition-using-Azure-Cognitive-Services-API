@@ -11,18 +11,27 @@ import re
 import os
 import shutil
 
+#Function used to clean and extract the FileNames/testData from DropBox Url
+#This will not be needed for people who already have testData
 def testfile(link):
+    #Pass the dropBox link
     url1 = link
+    
+    #Pass a get request to create an object
     testData = requests.get(url1)
     
+    #Create a .zip object in the directory
     with open('testData.zip','wb') as data: 
         data.write(testData.content)
     
+    #Make a directory that contains only testData
     os.mkdir("testCustID")
         
+    #Extracting contents of .zip file    
     with ZipFile("testData.zip","r") as zipObj:
         zipObj.extractall("testCustID")
         
+    #removing .zip file
     os.remove("testData.zip")
         
     #Access filenames and filepath  for testdata inside the directory
@@ -44,29 +53,36 @@ def testfile(link):
     return testData
 
 def subscriptionKey():
-    subscriptionKey = "73db40a0e0854b08b37f55c8e0043b6d"
+    #Access key to pass request calls to Azure
+    subscriptionKey = "{Enter your subscription key}"
     return subscriptionKey
 
 def detectEndPoint():
-    faceApiUrl = "https://demofaceapi610.cognitiveservices.azure.com/face/v1.0/detect"
+    #EndPoint Url for detecting the face
+    faceApiUrl = "https://{Enter your endpoint URL}/face/v1.0/detect"
     return faceApiUrl
 
 def verifyEndPoint():
-    faceApiUrl1 = "https://demofaceapi610.cognitiveservices.azure.com/face/v1.0/verify"
+    #EndPoint Url for verifying the face
+    faceApiUrl1 = "https://{Enter your endpoint URL}/face/v1.0/verify"
     return faceApiUrl1
     
 def pgEndPoint():
-    faceApiUrl2 = "https://demofaceapi610.cognitiveservices.azure.com/face/v1.0/persongroups/verifiedcustomerpics1"
+    #Creates a PersonGroup(Parent Folder)
+    faceApiUrl2 = "https://{Enter your endpoint URL}/face/v1.0/persongroups/{personGroupId}"
     return faceApiUrl2
 
 def pgpEndPoint():
-    faceApiUrl3 = "https://demofaceapi610.cognitiveservices.azure.com/face/v1.0/persongroups/verifiedcustomerpics1/persons"
+    #Creates a PersonGroup Person which can thought as a subfolder inside a parent folder(PersonGroup)
+    faceApiUrl3 = "https://{Enter your endpoint URL}/face/v1.0/persongroups/{personGroupId}/persons"
     return faceApiUrl3
 
 def pgpAddEndPoint():
-    faceApiUrl4 = "https://demofaceapi610.cognitiveservices.azure.com/face/v1.0/persongroups/verifiedcustomerpics1/persons/{personId}/persistedFaces"
+    #Adds the faces inside PersonGroup Person(subfolder)
+    faceApiUrl4 = "https://{Enter your endpoint URL}/face/v1.0/persongroups/{personGroupId}/persons/{personId}/persistedFaces"
     return faceApiUrl4
 
 def trainEndPoint():
-    faceApiUrl5 = "https://demofaceapi610.cognitiveservices.azure.com/face/v1.0/persongroups/verifiedcustomerpics1/train"
+    #Trains the PersonGroup
+    faceApiUrl5 = "https://{Enter your endpoint URL}/face/v1.0/persongroups/{personGroupId}/train"
     return faceApiUrl5
