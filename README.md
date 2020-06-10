@@ -1,7 +1,7 @@
 In this repository there are two .py files. A detailed documentation is as follows:
 
 fileNamesAndAPI.py - This file contains different funnction which will be imported in the parent file when runnning the script
-1) testfile(link) - This funciton cleans the data and extract the fileNames and the filePath of your local computer where the image is saved
+1) testfile(link) - This funciton cleans the data and extract the fileNames and the filePath of your local computer where the image is stored
 2) subscriptionKey() - an object will be returned that holds the key to Azure resource. This key can be found whille setting up the resource in Azure
 3) detectEndPoint() - returns a url that will further be passed as a POST request to generate a faceId 
 4) verifyEndPoint() - returns a url that will further be passed as a POST request to verify two faceId at a time
