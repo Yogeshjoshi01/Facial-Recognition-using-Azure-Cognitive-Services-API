@@ -1,11 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri May  8 17:18:12 2020
 
-@author: yoges
-"""
 
-#FACE API Using person group
+#Setting up PersonGroup API 
 import time
 import pandas as pd
 import os
@@ -14,53 +9,53 @@ import json
 from PIL import Image
 import urllib.request, urllib.parse, urllib.error
 import numpy as np
-import genTestFile
+#module that is created separately
+import fileNamesAndAPI
 import requests
 import http.client, urllib.request, urllib.parse, urllib.error, base64
 
-subscriptionKey = genTestFile.subscriptionKey()
-EndPoint = genTestFile.pgEndPoint()
-EndPoint1 = genTestFile.pgpEndPoint()
-EndPoint2 = genTestFile.pgpAddEndPoint()
-trainEndPoint = genTestFile.trainEndPoint()
+subscriptionKey = fileNamesAndAPI.subscriptionKey()
+EndPoint = fileNamesAndAPI.pgEndPoint()
+EndPoint1 = fileNamesAndAPI.pgpEndPoint()
+EndPoint2 = fileNamesAndAPI.pgpAddEndPoint()
+trainEndPoint = fileNamesAndAPI.trainEndPoint()
 
 headers = {
     'Content-Type': 'application/json',
     'Ocp-Apim-Subscription-Key': subscriptionKey
 }
 
-#params = {'personGroupId':'yj610'}
 body = {
     'name':'knownfaces',
     'recognitionModel': 'recognition_02'
 }
 
 
-#creating a person group
+#1) CREATING PERSONGROUP
 response = requests.put(url =EndPoint, headers=headers,json=body)
-#response.status_code
-print(response.url)
+response.status_code
 
-
-knownData = pd.read_csv("cleanedFile1.csv")
+#importing the csv
+knownData = pd.read_csv("Enter the csv which contains Known Faces")
+#list that keeps track of individual persons
 personId = []
-for i in knownData.custID.unique():
+#2) CREATING PERSONGROUP PERSON
+for i in knownData.{fileName}.unique():
     body1 = {
         'name':str(i)
         }
     response1 = requests.post(url =EndPoint1,headers =headers,json = body1)
+    #No more than 20 calls per minute
     time.sleep(3.5)
+    #extracts the personId that will be passed later
     personId.append(response1.json()['personId'])
     
 df = pd.DataFrame(columns=['personId'])
 df['personId']=personId
+#exporting the list of personId in directory
 df.to_csv('personId.csv',index=False)
-#create person group person
-#response1 = requests.post(url =EndPoint1,headers =headers,json = body1 )
-#response1.status_code
-#print(response1.text)
-#print(response1.url)
-#print(response1.json())
+
+#3) ADDING FACES TO PERSONGROUP PERSON(SUBFOLDER) 
 headers1 = {
     'Content-Type': 'application/octet-stream',
     'Ocp-Apim-Subscription-Key': subscriptionKey
@@ -69,32 +64,23 @@ headers1 = {
 df=pd.read_csv('personId.csv')
 flag = 0
 number = 0
-for i in knownData.custID.unique():
+for i in knownData.{fileName}.unique():
     personID = df.loc[flag,'personId']
-    EpUrl = 'https://demofaceapi610.cognitiveservices.azure.com/face/v1.0/persongroups/verifiedcustomerpics1/persons/{}/persistedFaces'.format(personID)
+    EpUrl = 'https://{Enter your endpoint url here}/face/v1.0/persongroups/{personGroupId}/persons/{}/persistedFaces'.format(personID)
     for j in knownData[knownData["custID"]==i].index:
-        url = knownData.loc[j,'filePath']     
+        url = knownData.loc[j,'filePath']
+        #read the image in bytes
         imageData1 = open(url,"rb").read()
+        #Adding faces in each subfolder
         response2 = requests.post(url = EpUrl,headers=headers1,data = imageData1)
         time.sleep(4)
         print(flag,number)
         number +=1
     flag+=1
 
-
-
-#TRAIN PERSON GROUP
+#4)TRAIN PERSON GROUP
 headers3 = {
     'Ocp-Apim-Subscription-Key': subscriptionKey
 }
 
 reponse3 = requests.post(url=trainEndPoint,headers =headers3)
-response4 = requests.get(url = "https://demofaceapi610.cognitiveservices.azure.com/face/v1.0/persongroups/verifiedcustomerpics1/training",headers=headers3)
-response5 = requests.get(url = "https://demofaceapi610.cognitiveservices.azure.com/face/v1.0/persongroups/verifiedcustomerpics1",headers=headers)
-print(response4.status_code)
-print(response4.text)   
-#headers2 = { 'Ocp-Apim-Subscription-Key': subscriptionKey   }
-#getEP = 'https://demofaceapi610.cognitiveservices.azure.com/face/v1.0/persongroups/verifiedcustomerpics1/persons/558fd59a-aa8a-427f-ae2b-0e9f5c57dcf5'    
-#response3 = requests.get(url =getEP,headers=headers2 )
-#print(response3.text)
-#response3.status_code
